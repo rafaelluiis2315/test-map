@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>error</title>
+</head>
+<body>
+<h1>error</h1>
+
+<div th:if="${param.error}" class="alert alert-danger">
+    <p>Erro ao criar cliente: </p>
+</div>
+
+<div th:if="${param.success}" class="alert alert-danger">
+    <p>${param.success}</p>
+</div>
+
+</body>
+</html>
