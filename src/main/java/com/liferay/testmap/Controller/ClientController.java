@@ -3,6 +3,7 @@
     import com.liferay.testmap.DTO.ClientDao;
     import com.liferay.testmap.Model.Client;
 
+    import com.liferay.testmap.Util.UtilExcel;
     import org.apache.poi.hssf.usermodel.HSSFWorkbook;
     import org.apache.poi.ss.usermodel.*;
 
@@ -17,6 +18,7 @@
 
     import java.io.IOException;
     import java.io.InputStream;
+    import java.io.Serializable;
     import java.util.Iterator;
 
     @Controller
@@ -48,77 +50,15 @@
                 return "redirect:/";
             }
 
+            UtilExcel utilExcel = new UtilExcel();
+            Serializable resulte;
             try {
+                resulte = utilExcel.readFileExcel(inputStream, fileName);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-
-                Workbook workbook;
-
-                if (fileName.contains(".xls")) {
-                    workbook = new XSSFWorkbook(inputStream);
-                }else {
-                    workbook = new HSSFWorkbook(inputStream);
-                }
-
-                FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-
-                Sheet sheetSummary = workbook.getSheetAt(50);
-
-                Iterator<Row> rowIterator = sheetSummary.iterator();
-
-                while (rowIterator.hasNext()) {
-                    Row row = rowIterator.next();
-                    Iterator<Cell> cellIterator = row.cellIterator();
-
-                    while (cellIterator.hasNext()) {
-                        Cell cell = cellIterator.next();
-
-                        switch (cell.getCellType()) {
-                            case BOOLEAN:
-                                System.out.println(cell.getBooleanCellValue());
-                                break;
-                            case NUMERIC:
-                                System.out.println(cell.getNumericCellValue());
-                                break;
-                            case STRING:
-                                System.out.println(cell.getStringCellValue());
-                                break;
-                            case FORMULA:
-
-                                try{
-                                    CellValue cellValue = evaluator.evaluate(cell);
-
-                                    switch (cellValue.getCellType()) {
-                                        case BOOLEAN:
-                                            System.out.println(cellValue.getBooleanValue());
-                                            break;
-                                        case NUMERIC:
-                                            System.out.println(cellValue.getNumberValue());
-                                            break;
-                                        case STRING:
-                                            System.out.println(cellValue.getStringValue());
-                                            break;
-                                        default:
-                                            System.out.println("Unsupported cell type");
-                                    }
-                                }catch (Exception e) {
-                                    System.out.println("Error ==>" + e.getMessage());
-                                }
-
-                            default:
-                                System.out.println("Unsupported cell type");
-                        }
-
-
-
-                    }
-                }
-
-
-            } catch (Exception e) {
-                System.out.println("Error while processing action: " + e.getMessage());
-
-            };
-
+            System.out.println(resulte);
 
             Client client = new Client();
             client.setName(name);
